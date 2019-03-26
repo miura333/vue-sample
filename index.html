@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="modal.js"></script>
+    <script src="load.js"></script>
+
+    <link href="load.css" rel="stylesheet" type="text/css">
+    <link href="modal.css" rel="stylesheet" type="text/css">
+    <link href="main.css" rel="stylesheet" type="text/css">
+
+    <title>Hello, world!</title>
+</head>
+<body>
+    <div id="app">
+        <loading v-if="isLoading"></loading>
+        <modal v-if="showModal" @close="showModal = false">
+            <h3 slot="header">Load completed</h3>
+        </modal>
+        <h1>{{ message }}</h1>
+        <div style="width:720px;">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>title</th>
+                        <th>content</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="content in news">
+                        <td width="50%">{{content.title}}</td>
+                        <td width="50%">{{content.content}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+    new Vue({
+        el: '#app',
+        data: {
+            isLoading: false,
+            showModal: false,
+            message: 'Hello Vue.js!',
+            news: [
+                {'title':'title1', 'content':'text1'},
+                {'title':'title2', 'content':'text2'}
+            ]
+        },
+        mounted: function () {
+            var self = this;
+            self.isLoading = true;
+
+            var url = 'https://www.example.com/api/news';
+
+            axios.get(url).then(function(response){
+                console.log(response);
+                self.news = response.data.notifications;
+                self.showModal = true;
+                self.isLoading = false;
+            });
+        }
+    });
+    </script>
+</body>
+</html>
